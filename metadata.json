@@ -1,0 +1,6 @@
+{
+  "name": "Rusd.Pen",
+  "description": "A quiet, modern archive and personal desk for Al-Azhar Syariah Islamiyyah students. Features lecture notes, summaries, organized material hub, and clean writing desk with Supabase integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

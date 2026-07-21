@@ -1,0 +1,292 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom scrollbar and ambient grid background matching screenshot */
+body {
+  background-color: #f3f6f6;
+  color: #1a2e26;
+  font-family: var(--font-sans);
+  overflow-y: scroll;
+}
+
+/* Thin Grid Pattern for Hero section matching image_42189c.jpg */
+.hero-thin-grid {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, rgba(30, 70, 70, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 70, 70, 0.04) 1px, transparent 1px);
+}
+
+.radial-glow {
+  background: radial-gradient(circle at 10% 20%, rgba(30, 70, 70, 0.04) 0%, transparent 50%);
+}
+
+/* Base Neumorphic Soft UI Utilities */
+.neumorph-raised {
+  background-color: #f3f6f6;
+  box-shadow: 6px 6px 12px #d5dadb, -6px -6px 12px #ffffff;
+}
+
+.neumorph-sunken {
+  background-color: #f3f6f6;
+  box-shadow: inset 4px 4px 8px #d5dadb, inset -4px -4px 8px #ffffff;
+}
+
+/* Interactive Neumorphic Button */
+.neumorph-btn {
+  background-color: #f3f6f6;
+  color: #1e4646;
+  box-shadow: 6px 6px 12px #d5dadb, -6px -6px 12px #ffffff;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neumorph-btn:hover {
+  box-shadow: 3px 3px 6px #d5dadb, -3px -3px 6px #ffffff;
+  transform: translateY(-0.5px);
+}
+
+.neumorph-btn:active, .neumorph-btn.active {
+  box-shadow: inset 4px 4px 8px #d5dadb, inset -4px -4px 8px #ffffff;
+  transform: translateY(0.5px);
+}
+
+/* Accent Solid Teal Neumorphic Button for CTA and Primary actions */
+.neumorph-btn-teal {
+  background-color: #1e4646;
+  color: #ffffff;
+  box-shadow: 4px 4px 10px rgba(30, 70, 70, 0.2), -4px -4px 10px #ffffff;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neumorph-btn-teal:hover {
+  background-color: #265555;
+  box-shadow: 2px 2px 5px rgba(30, 70, 70, 0.25), -2px -2px 5px #ffffff;
+  transform: translateY(-0.5px);
+}
+
+.neumorph-btn-teal:active, .neumorph-btn-teal.active {
+  background-color: #173838;
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.3), inset -3px -3px 6px rgba(255, 255, 255, 0.1);
+  transform: translateY(0.5px);
+}
+
+/* Accent Solid Green Neumorphic Button for Approvals */
+.neumorph-btn-green {
+  background-color: #10b981;
+  color: #ffffff;
+  box-shadow: 4px 4px 10px rgba(16, 185, 129, 0.25), -4px -4px 10px #ffffff;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neumorph-btn-green:hover {
+  background-color: #059669;
+  box-shadow: 2px 2px 5px rgba(16, 185, 129, 0.3), -2px -2px 5px #ffffff;
+  transform: translateY(-0.5px);
+}
+
+.neumorph-btn-green:active, .neumorph-btn-green.active {
+  background-color: #047857;
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.2), inset -3px -3px 6px rgba(255, 255, 255, 0.1);
+  transform: translateY(0.5px);
+}
+
+/* Inset Input Fields for soft forms */
+.neumorph-input {
+  background-color: #f3f6f6;
+  box-shadow: inset 3px 3px 6px #d5dadb, inset -3px -3px 6px #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.2s ease;
+}
+
+.neumorph-input:focus {
+  box-shadow: inset 4px 4px 8px #c8cfd0, inset -4px -4px 8px #ffffff;
+  border-color: rgba(30, 70, 70, 0.15);
+}
+
+/* Glassmorphism utility for floating cards */
+.glass-panel {
+  background: rgba(243, 246, 246, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 6px 6px 12px #d5dadb, -6px -6px 12px #ffffff;
+}
+
+/* Smooth transitions */
+.transition-all-custom {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Float Drift Animations for Hero Background */
+@keyframes float-drift-1 {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg) scale(1);
+  }
+  33% {
+    transform: translate(30px, -40px) rotate(120deg) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) rotate(240deg) scale(0.95);
+  }
+  100% {
+    transform: translate(0px, 0px) rotate(360deg) scale(1);
+  }
+}
+
+@keyframes float-drift-2 {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(-30px, 40px) rotate(-180deg) scale(1.15);
+  }
+  100% {
+    transform: translate(0px, 0px) rotate(-360deg) scale(1);
+  }
+}
+
+.animate-drift-slow-1 {
+  animation: float-drift-1 25s infinite ease-in-out;
+}
+
+.animate-drift-slow-2 {
+  animation: float-drift-2 30s infinite ease-in-out;
+}
+
+/* ==========================================
+   ELEGANT DARK FOREST THEME
+   ========================================== */
+
+body.dark {
+  background-color: #0e1915;
+  color: #e2ede8;
+}
+
+body.dark .neumorph-raised {
+  background-color: #13241e;
+  box-shadow: 6px 6px 12px #0a1310, -6px -6px 12px #1d362d;
+}
+
+body.dark .neumorph-sunken {
+  background-color: #13241e;
+  box-shadow: inset 4px 4px 8px #0a1310, inset -4px -4px 8px #1d362d;
+}
+
+body.dark .neumorph-btn {
+  background-color: #13241e;
+  color: #a4cebe;
+  box-shadow: 6px 6px 12px #0a1310, -6px -6px 12px #1d362d;
+}
+
+body.dark .neumorph-btn:hover {
+  box-shadow: 3px 3px 6px #0a1310, -3px -3px 6px #1d362d;
+  color: #c9e6da;
+}
+
+body.dark .neumorph-btn:active, body.dark .neumorph-btn.active {
+  box-shadow: inset 4px 4px 8px #0a1310, inset -4px -4px 8px #1d362d;
+}
+
+body.dark .neumorph-input {
+  background-color: #101e19;
+  box-shadow: inset 3px 3px 6px #080f0c, inset -3px -3px 6px #1b3027;
+  border: 1px solid rgba(164, 206, 190, 0.1);
+  color: #f3f6f6;
+}
+
+body.dark .neumorph-input:focus {
+  box-shadow: inset 4px 4px 8px #080f0c, inset -4px -4px 8px #1b3027;
+  border-color: rgba(164, 206, 190, 0.3);
+}
+
+body.dark .glass-panel {
+  background: rgba(19, 36, 30, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(164, 206, 190, 0.15);
+  box-shadow: 6px 6px 12px #0a1310, -6px -6px 12px #1d362d;
+}
+
+body.dark .hero-thin-grid {
+  background-image: 
+    linear-gradient(to right, rgba(164, 206, 190, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(164, 206, 190, 0.05) 1px, transparent 1px);
+}
+
+body.dark .radial-glow {
+  background: radial-gradient(circle at 10% 20%, rgba(164, 206, 190, 0.05) 0%, transparent 60%);
+}
+
+/* Color & Text overrides in Dark mode */
+body.dark text, body.dark p, body.dark span, body.dark label {
+  color: #9abfb1 !important;
+}
+
+body.dark h1, body.dark h2, body.dark h3, body.dark h4, body.dark h5, body.dark h6, body.dark strong {
+  color: #f3f6f6 !important;
+}
+
+body.dark input, body.dark select, body.dark textarea {
+  color: #f3f6f6 !important;
+}
+
+body.dark .text-gray-400, body.dark .text-gray-500, body.dark .text-\[\#446257\] {
+  color: #729e8c !important;
+}
+
+body.dark .text-gray-900, body.dark .text-\[\#1a2e26\] {
+  color: #f3f6f6 !important;
+}
+
+body.dark .text-\[\#1e4646\] {
+  color: #a4cebe !important;
+}
+
+body.dark .border-gray-200\/50, body.dark .border-gray-200\/80, body.dark .border-gray-200\/40, body.dark .border-gray-100, body.dark .border-emerald-150\/40 {
+  border-color: rgba(164, 206, 190, 0.1) !important;
+}
+
+body.dark .bg-\[\#f3f6f6\] {
+  background-color: #13241e !important;
+}
+
+body.dark .bg-white {
+  background-color: #13241e !important;
+}
+
+body.dark .bg-\[\#ebf0f0\], body.dark .bg-\[\#f3f6f6\]\/50, body.dark .bg-\[\#ebf0f0\]\/30 {
+  background-color: #172c25 !important;
+}
+
+body.dark .bg-emerald-50\/80, body.dark .from-emerald-50\/80 {
+  background: rgba(16, 185, 129, 0.05) !important;
+  --tw-gradient-from: rgba(16, 185, 129, 0.05) var(--tw-gradient-from-position) !important;
+}
+
+body.dark .to-white {
+  --tw-gradient-to: #13241e var(--tw-gradient-to-position) !important;
+}
+
+body.dark .hover\:bg-gray-150\/20:hover {
+  background-color: rgba(164, 206, 190, 0.06) !important;
+}
+
+body.dark .text-gray-950 {
+  color: #ffffff !important;
+}
+
+body.dark .bg-\[\#e6ecec\] {
+  background-color: #1a3229 !important;
+}
+
+body.dark .shadow-\[inset_1px_1px_3px_\#d5dadb\], body.dark .shadow-\[inset_3px_3px_6px_\#d5dadb\], body.dark .shadow-\[inset_2px_2px_4px_\#d5dadb\] {
+  box-shadow: inset 2px 2px 4px #0a1310, inset -2px -2px 4px #1d362d !important;
+}
+
+body.dark .bg-gradient-to-r {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops)) !important;
+}

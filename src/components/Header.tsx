@@ -38,7 +38,7 @@ export default function Header({ currentView, onNavigate, adminUser, onOpenSearc
         >
           <Logo size={26} />
           <span className="font-sans font-bold text-base md:text-lg text-[#1e4646] tracking-tight pr-1 hidden min-[480px]:inline">
-            RusdPen
+            Rusd.Pen
           </span>
         </motion.button>
 

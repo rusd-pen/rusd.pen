@@ -21,7 +21,7 @@ export async function uploadFileToCloudinary(
   }
 
   // Cloudinary auto endpoint supports raw, pdf, images, and videos
-  const url = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
+  const url = `https://api.cloudinary.com/v1_1/${cloudName}/raw/upload`;
 
   const formData = new FormData();
   formData.append('file', file);

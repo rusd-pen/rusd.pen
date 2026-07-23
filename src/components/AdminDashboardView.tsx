@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   FileText, BookOpen, Tag, MessageSquare, Inbox, Plus, Trash2, Check,
-  X, LogOut, ArrowRight, Save, Eye, Globe, Edit, Database, Cloud, CloudOff, AlertTriangle, Info
+  X, LogOut, ArrowRight, Save, Eye, Globe, Edit, Database, Cloud, CloudOff, AlertTriangle, Info, Loader2, UploadCloud
 } from 'lucide-react';
 import { Article, Material, Taxonomy, Comment, MaterialRequest, AdminUser } from '../types';
 import { dbService } from '../lib/database';
+import { uploadFileToCloudinary } from '../lib/cloudinary';
 import MediumEditorView from './MediumEditorView';
 
 interface AdminDashboardViewProps {
@@ -69,6 +70,9 @@ export default function AdminDashboardView({
   // File Upload States
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string>('#');
   const [uploadedFileName, setUploadedFileName] = useState<string>('');
+  const [isUploadingToCloudinary, setIsUploadingToCloudinary] = useState(false);
+  const [cloudinaryUploadProgress, setCloudinaryUploadProgress] = useState(0);
+  const [cloudinaryError, setCloudinaryError] = useState<string | null>(null);
 
   // Form toggles and states
   const [showArticleForm, setShowArticleForm] = useState(false);
@@ -131,8 +135,9 @@ export default function AdminDashboardView({
     setShowArticleForm(false);
   };
 
-  const handleFileSelected = (file: File) => {
+  const handleFileSelected = async (file: File) => {
     setUploadedFileName(file.name);
+    setCloudinaryError(null);
     
     // Auto populate Title if empty
     if (!matTitle) {
@@ -151,13 +156,29 @@ export default function AdminDashboardView({
       : sizeInMB.toFixed(1) + ' MB';
     setMatSize(formattedSize);
 
-    // Read file to Base64 to make it truly persistent & downloadable
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64 = e.target?.result as string;
-      setUploadedFileUrl(base64);
-    };
-    reader.readAsDataURL(file);
+    // Upload directly to Cloudinary
+    setIsUploadingToCloudinary(true);
+    setCloudinaryUploadProgress(0);
+
+    try {
+      const cUrl = await uploadFileToCloudinary(file, (percent) => {
+        setCloudinaryUploadProgress(percent);
+      });
+      setUploadedFileUrl(cUrl);
+    } catch (err: any) {
+      console.warn('Cloudinary upload error:', err);
+      setCloudinaryError(err.message || 'Gagal mengunggah ke Cloudinary');
+      
+      // Fallback read to Base64 so form submission still works
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target?.result as string;
+        setUploadedFileUrl(base64);
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setIsUploadingToCloudinary(false);
+    }
   };
 
   const handleCreateMaterialSubmit = (e: React.FormEvent) => {
@@ -547,17 +568,43 @@ export default function AdminDashboardView({
                     />
                     
                     <div className="w-11 h-11 rounded-full neumorph-raised flex items-center justify-center text-[#1e4646] group-hover:scale-110 transition-transform">
-                      <Plus size={18} />
+                      {isUploadingToCloudinary ? (
+                        <Loader2 size={18} className="animate-spin text-[#1e4646]" />
+                      ) : (
+                        <UploadCloud size={18} />
+                      )}
                     </div>
                     
-                    {uploadedFileName ? (
+                    {isUploadingToCloudinary ? (
+                      <div className="space-y-1.5 w-full max-w-xs mx-auto">
+                        <p className="text-xs font-bold text-[#1e4646] font-sans">
+                          Mengunggah ke Cloudinary ({cloudinaryUploadProgress}%)...
+                        </p>
+                        <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                          <div 
+                            className="bg-[#1e4646] h-1.5 rounded-full transition-all duration-300" 
+                            style={{ width: `${cloudinaryUploadProgress}%` }}
+                          />
+                        </div>
+                      </div>
+                    ) : uploadedFileName ? (
                       <div className="space-y-1">
-                        <p className="text-sm font-extrabold text-emerald-800 font-sans">
-                          ✓ {uploadedFileName}
+                        <p className="text-sm font-extrabold text-emerald-800 font-sans flex items-center justify-center gap-1.5">
+                          <span>✓ {uploadedFileName}</span>
+                          {uploadedFileUrl.includes('cloudinary') && (
+                            <span className="px-2 py-0.5 text-[10px] bg-emerald-100 text-emerald-800 font-bold rounded-full">
+                              Cloudinary ☁️
+                            </span>
+                          )}
                         </p>
                         <p className="text-xs text-gray-400 font-mono">
                           {matSize} • {matType.toUpperCase()}
                         </p>
+                        {cloudinaryError && (
+                          <p className="text-[11px] text-amber-700 font-sans">
+                            ⚠️ {cloudinaryError} (Gunakan simpan lokal/URL manual)
+                          </p>
+                        )}
                       </div>
                     ) : (
                       <div className="space-y-1">
@@ -565,11 +612,24 @@ export default function AdminDashboardView({
                           Drag &amp; drop atau klik untuk memilih file materi kuliah
                         </p>
                         <p className="text-[10px] text-gray-400 font-sans">
-                          Sistem akan mengekstrak Judul, Ukuran, dan Tipe file secara otomatis!
+                          File akan otomatis terunggah ke Cloudinary ☁️
                         </p>
                       </div>
                     )}
                   </div>
+                </div>
+
+                {/* File URL Input */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 mb-1">File URL / Cloudinary Link</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="https://res.cloudinary.com/..."
+                    value={uploadedFileUrl}
+                    onChange={(e) => setUploadedFileUrl(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl neumorph-input text-sm text-[#1a2e26] font-mono focus:outline-none"
+                  />
                 </div>
 
                 <div>

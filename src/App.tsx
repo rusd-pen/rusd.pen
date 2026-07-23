@@ -126,32 +126,47 @@ export default function App() {
       const mat = materials.find(m => m.id === id);
       if (!mat) return;
 
-      if (mat.file_url && mat.file_url.startsWith('data:')) {
+      const fileUrl = (mat.file_url || '').trim();
+      const ext = (mat.file_type || 'pdf').toLowerCase();
+      const sanitizedTitle = mat.title.replace(/[/\\?%*:|"<>]/g, '_');
+      const filename = sanitizedTitle.endsWith(`.${ext}`) ? sanitizedTitle : `${sanitizedTitle}.${ext}`;
+
+      if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://') || fileUrl.startsWith('//')) {
+        // Direct file URL (Cloudinary or external HTTP/HTTPS link)
+        try {
+          const res = await fetch(fileUrl);
+          if (!res.ok) throw new Error('Download request failed');
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        } catch {
+          // If CORS or network prevents direct fetch, open or trigger download via target="_blank"
+          const link = document.createElement('a');
+          link.href = fileUrl;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } else if (fileUrl.startsWith('data:')) {
         // Real Base64 file download trigger
         const link = document.createElement('a');
-        link.href = mat.file_url;
-        link.download = `${mat.title}.${mat.file_type || 'pdf'}`;
+        link.href = fileUrl;
+        link.download = filename;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       } else {
-        // Fallback realistic download of text metadata
-        const fileContent = `Rusd.Pen - Lecture Material Archive\n\n` +
-          `Title: ${mat.title}\n` +
-          `Description: ${mat.description || 'Tidak ada deskripsi.'}\n` +
-          `File Size: ${mat.file_size || 'N/A'}\n` +
-          `File Type: ${mat.file_type || 'N/A'}\n\n` +
-          `Terima kasih telah menggunakan Rusd.Pen! File materi lengkap disimpan dengan aman di server utama kami.`;
-        
-        const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${mat.title.toLowerCase().replace(/[^a-z0-9]+/g, '_')}_archive.txt`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        // Missing URL or sample seed item
+        alert(`Materi "${mat.title}" belum memiliki file PDF yang diunggah. Silakan unggah file PDF materi ini melalui Dashboard Admin.`);
       }
     } catch (err) {
       console.error(err);
@@ -529,4 +544,3 @@ export default function App() {
     </div>
   );
 }
-

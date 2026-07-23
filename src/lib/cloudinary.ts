@@ -6,6 +6,9 @@ export interface CloudinaryUploadResponse {
   original_filename: string;
 }
 
+/**
+ * Uploads a file (e.g. PDF lecture material) directly to Cloudinary using Unsigned Upload Preset.
+ */
 export async function uploadFileToCloudinary(
   file: File,
   onProgress?: (percent: number) => void
@@ -17,6 +20,7 @@ export async function uploadFileToCloudinary(
     throw new Error('Cloudinary Cloud Name atau Upload Preset belum dikonfigurasi.');
   }
 
+  // Cloudinary auto endpoint supports raw, pdf, images, and videos
   const url = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
 
   const formData = new FormData();
@@ -41,7 +45,12 @@ export async function uploadFileToCloudinary(
         try {
           const data: CloudinaryUploadResponse = JSON.parse(xhr.responseText);
           if (data.secure_url) {
-            resolve(data.secure_url);
+            // Automatically add fl_attachment for PDF/raw files to ensure smooth browser download
+            let downloadUrl = data.secure_url;
+            if (downloadUrl.includes('/image/upload/') && !downloadUrl.includes('/fl_attachment/')) {
+              downloadUrl = downloadUrl.replace('/image/upload/', '/image/upload/fl_attachment/');
+            }
+            resolve(downloadUrl);
           } else {
             reject(new Error('URL file tidak ditemukan dalam respon Cloudinary.'));
           }
@@ -64,4 +73,17 @@ export async function uploadFileToCloudinary(
 
     xhr.send(formData);
   });
+}
+
+/**
+ * Ensures Cloudinary URLs have the fl_attachment flag so browsers download PDF files directly.
+ */
+export function formatCloudinaryDownloadUrl(url: string): string {
+  if (!url || !url.includes('cloudinary.com')) return url;
+  if (url.includes('/fl_attachment/')) return url;
+
+  if (url.includes('/image/upload/')) {
+    return url.replace('/image/upload/', '/image/upload/fl_attachment/');
+  }
+  return url;
 }

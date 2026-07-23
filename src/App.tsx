@@ -11,6 +11,7 @@ import ContactView from './components/ContactView';
 import LoginView from './components/LoginView';
 import AdminDashboardView from './components/AdminDashboardView';
 import { dbService } from './lib/database';
+import { formatCloudinaryDownloadUrl } from './lib/cloudinary';
 import { Article, Material, Taxonomy, Comment, MaterialRequest, AdminUser } from './types';
 
 function RedirectToHome({ onRedirect }: { onRedirect: () => void }) {
@@ -126,7 +127,8 @@ export default function App() {
       const mat = materials.find(m => m.id === id);
       if (!mat) return;
 
-      const fileUrl = (mat.file_url || '').trim();
+      let fileUrl = (mat.file_url || '').trim();
+      fileUrl = formatCloudinaryDownloadUrl(fileUrl);
       const ext = (mat.file_type || 'pdf').toLowerCase();
       const sanitizedTitle = mat.title.replace(/[/\\?%*:|"<>]/g, '_');
       const filename = sanitizedTitle.endsWith(`.${ext}`) ? sanitizedTitle : `${sanitizedTitle}.${ext}`;
